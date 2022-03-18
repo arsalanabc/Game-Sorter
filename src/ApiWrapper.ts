@@ -6,8 +6,8 @@ class ApiWrapper {
   constructor(url: string) {
     this.API = `${url}`;
   }
-  async getGames(date: string, teamId: number) {
-    return await this.fetchCall(`teamId=${teamId}&date=${date}`);
+  async getGames(date: string) {
+    return await this.fetchCall(`date=${date}`);
   }
 
   private async fetchCall(q: string) {
