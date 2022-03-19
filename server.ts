@@ -53,8 +53,45 @@ function sortByDoubleHeaderGames(games: any) {
     return g.doubleHeader == 'N';
   });
   return [
-    ...singleSessionDhGames,
-    ...splitSessionDhGames,
+    ...sortSingleSessionDhGames(singleSessionDhGames),
+    ...sortSplitSessionDhGames(splitSessionDhGames),
     ...nonDoubleHeaderGames,
   ];
+}
+
+function sortSingleSessionDhGames(games: any[]) {
+  if (games.length == 0) return [];
+
+  const firstGame = games.filter((g: any) => {
+    return g.status.startTImeTBD == 'false';
+  });
+
+  const secondGame = games.filter((g: any) => {
+    return g.status.startTImeTBD == 'true';
+  });
+
+  return sortByLiveGame(firstGame, secondGame);
+}
+
+function sortSplitSessionDhGames(games: any) {
+  if (games.length == 0) return [];
+
+  const sortedByGameDate = games.sort((a: any, b: any) => {
+    return a.gameDate > b.gameDate ? 1 : -1;
+  });
+
+  return sortByLiveGame(sortedByGameDate[0], sortedByGameDate[1]);
+}
+
+function sortByLiveGame(gameA: any, gameB: any) {
+  return isLive(gameB) ? [gameB, gameA] : [gameA, gameB];
+}
+
+function isLive(game: any) {
+  const GAME_LENGTH_IN_SEC = 3 * 60 * 1000;
+  const currentTime = Date.now();
+  const gameTime = new Date(game.gameDate).getTime();
+  const timeDiff = gameTime - currentTime;
+
+  return timeDiff < 0 && timeDiff > -GAME_LENGTH_IN_SEC;
 }
