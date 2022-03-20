@@ -79,3 +79,13 @@ export function sortNonDoubleHeaderGames(games: any) {
 
   return [...liveGame, ...sortGamesChronologically(nonLiveGame)];
 }
+
+export function sortGames(games: any, teamId: number) {
+  const filteredGames = gamesFilterByTeamId(teamId, games);
+  const doubleHeaderGames = sortDoubleHeaderGames(filteredGames);
+  const nonDoubleHeaderGames = sortNonDoubleHeaderGames(filteredGames);
+
+  const filteredOutGames = gamesFilterOutByTeamId(teamId, games);
+
+  return [...doubleHeaderGames, ...nonDoubleHeaderGames, ...filteredOutGames];
+}

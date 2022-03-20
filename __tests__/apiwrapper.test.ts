@@ -1,4 +1,3 @@
-// import { assert } from 'chai';
 import ApiWrapper from '../src/ApiWrapper';
 
 describe('Api Wrapper', () => {

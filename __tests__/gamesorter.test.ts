@@ -11,7 +11,7 @@ import {
 } from '../src/GamesSorter';
 
 describe('Games Sorter', () => {
-  const liveGame = { gameDate: Date.now() - 60 * 1000 * 60 }; // game started 1 minute ago
+  const liveGame = { gameDate: Date.now() - 60 * 1000 }; // game started 1 minute ago
   const pastGame = { gameDate: Date.now() - 60 * 1000 * 60 * 5 };
   const futureGame = { gameDate: Date.now() + 60 * 1000 * 60 * 1 };
   const testGames = [
