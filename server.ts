@@ -6,14 +6,8 @@ import { sortGames } from './src/GamesSorter';
 export const app = express();
 const port = 3000;
 const API_URL = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&language=en`;
-// const API_KEY = process.env.API_KEY;
 const apiWrapper = new ApiWrapper(API_URL);
 
-app.get('/test', (req, res) => {
-  if (req) console.log('asds');
-
-  res.status(200).json({ name: 'john' });
-});
 app.get('/sort-games', async (req, res) => {
   res.header('Content-Type', 'application/json');
 
