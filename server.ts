@@ -1,12 +1,7 @@
 import * as express from 'express';
 require('dotenv').config();
 import ApiWrapper from './src/ApiWrapper';
-import {
-  gamesFilterByTeamId,
-  gamesFilterOutByTeamId,
-  sortDoubleHeaderGames,
-  sortNonDoubleHeaderGames,
-} from './src/GamesSorter';
+import { sortGames } from './src/GamesSorter';
 
 export const app = express();
 const port = 3000;
@@ -33,25 +28,12 @@ app.get('/sort-games', async (req, res) => {
     const { teamId, date } = req.query;
 
     const gamesFromMLBStats = await apiWrapper.getGames(date as string);
-    const games = gamesFromMLBStats.dates[0].games;
-    const filteredGames = gamesFilterByTeamId(
+    const sortedGames = sortGames(
+      gamesFromMLBStats.dates[0].games,
       parseInt(teamId as string),
-      games,
-    );
-    const doubleHeaderGames = sortDoubleHeaderGames(filteredGames);
-    const nonDoubleHeaderGames = sortNonDoubleHeaderGames(filteredGames);
-
-    const filteredOutGames = gamesFilterOutByTeamId(
-      parseInt(teamId as string),
-      games,
     );
 
-    gamesFromMLBStats.dates[0].games = [
-      ...doubleHeaderGames,
-      ...nonDoubleHeaderGames,
-      ...filteredOutGames,
-    ];
-
+    gamesFromMLBStats.dates[0].games = sortedGames;
     res.status(200).send(JSON.stringify(gamesFromMLBStats, null, 2));
   } catch (error) {}
 });
