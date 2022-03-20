@@ -11,14 +11,20 @@ class ApiWrapper {
   }
 
   private async fetchCall(q: string) {
-    try {
-      const response = await fetch(`${this.API}&${q}`);
-      const data = await response.json();
+    const response = await fetch(`${this.API}&${q}`);
+    const data = await response.json();
 
-      return data;
-    } catch (error) {
-      console.log('error', error);
+    if (response.status != 200) {
+      return {
+        error: {
+          statusText: response.statusText,
+          status: response.status,
+          ...data,
+        },
+      };
     }
+
+    return data;
   }
 }
 

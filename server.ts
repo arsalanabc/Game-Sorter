@@ -1,5 +1,4 @@
 import * as express from 'express';
-require('dotenv').config();
 import ApiWrapper from './src/ApiWrapper';
 import { sortGames } from './src/GamesSorter';
 
@@ -22,6 +21,11 @@ app.get('/sort-games', async (req, res) => {
     const { teamId, date } = req.query;
 
     const gamesFromMLBStats = await apiWrapper.getGames(date as string);
+
+    if ('error' in gamesFromMLBStats) {
+      throw gamesFromMLBStats.error;
+    }
+
     const sortedGames = sortGames(
       gamesFromMLBStats.dates[0].games,
       parseInt(teamId as string),
@@ -29,7 +33,9 @@ app.get('/sort-games', async (req, res) => {
 
     gamesFromMLBStats.dates[0].games = sortedGames;
     res.status(200).send(JSON.stringify(gamesFromMLBStats, null, 2));
-  } catch (error) {}
+  } catch (error) {
+    res.status(error.status).send(JSON.stringify(error, null, 2));
+  }
 });
 
 app.listen(port, () => {
