@@ -42,3 +42,29 @@ export function sortGamesChronologically(games: any[]) {
     return gameA.gameDate > gameB.gameDate ? 1 : -1;
   });
 }
+
+export function sortDoubleHeaderGames(games: any) {
+  const singleSessionDhGames = games.filter((g: any) => {
+    return g.doubleHeader == 'Y';
+  });
+
+  const splitSessionDhGames = games.filter((g: any) => {
+    return g.doubleHeader == 'S';
+  });
+
+  if (singleSessionDhGames.length == 2) {
+    return sortSingleSessionDhGames(
+      singleSessionDhGames[0],
+      singleSessionDhGames[1],
+    );
+  }
+
+  if (splitSessionDhGames.length == 2) {
+    return sortSplitSessionDhGames(
+      splitSessionDhGames[0],
+      splitSessionDhGames[1],
+    );
+  }
+
+  return [];
+}

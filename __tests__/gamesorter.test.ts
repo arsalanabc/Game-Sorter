@@ -3,6 +3,7 @@ import {
   gamesFilterOutByTeamId,
   isLive,
   sortByLiveGame,
+  sortDoubleHeaderGames,
   sortGamesChronologically,
   sortSingleSessionDhGames,
   sortSplitSessionDhGames,
@@ -269,6 +270,46 @@ describe('Games Sorter', () => {
       expect(
         sortGamesChronologically(expectedChronologicallySorted.reverse()),
       ).toStrictEqual(expectedChronologicallySorted);
+    });
+  });
+
+  describe('sortDoubleHeaderGames', () => {
+    it('should return empty for no games', () => {
+      expect(sortDoubleHeaderGames([])).toStrictEqual([]);
+    });
+    it('should return empty for no DH games', () => {
+      expect(
+        sortDoubleHeaderGames([{ doubleHeader: 'N' }, { doubleHeader: 'N' }]),
+      ).toStrictEqual([]);
+    });
+
+    it('should sort DH games first', () => {
+      const game1 = { gamePk: '1', doubleHeader: 'N' };
+      const game2 = {
+        gamePk: '2',
+        doubleHeader: 'Y',
+        status: { startTimeTBD: false },
+      };
+      const game3 = {
+        gamePk: '3',
+        doubleHeader: 'Y',
+        status: { startTimeTBD: true },
+      };
+      const game4 = { gamePk: '4', doubleHeader: 'S', gameDate: Date.now() };
+      const game5 = { gamePk: '5', doubleHeader: 'N' };
+      const game6 = {
+        gamePk: '6',
+        doubleHeader: 'S',
+        gameDate: Date.now() + 1000,
+      };
+
+      expect(sortDoubleHeaderGames([game3, game2, game4, game1])).toStrictEqual(
+        [game2, game3],
+      );
+
+      expect(sortDoubleHeaderGames([game6, game1, game4, game5])).toStrictEqual(
+        [game4, game6],
+      );
     });
   });
 });
