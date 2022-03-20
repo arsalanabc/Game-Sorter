@@ -3,6 +3,7 @@ import {
   gamesFilterOutByTeamId,
   isLive,
   sortByLiveGame,
+  sortGamesChronologically,
   sortSingleSessionDhGames,
   sortSplitSessionDhGames,
 } from '../src/GamesSorter';
@@ -225,18 +226,49 @@ describe('Games Sorter', () => {
     });
 
     it('should sort by gameDate if not live', () => {
-      const pastGame2 = { gameDate: Date.now() - 60 * 1000 * 60 * 4 };
-      const pastGame3 = { gameDate: Date.now() - 60 * 1000 * 60 * 9 };
-
       expect(sortSplitSessionDhGames(futureGame, pastGame)).toStrictEqual([
         pastGame,
         futureGame,
       ]);
 
+      const pastGame2 = { gameDate: Date.now() - 60 * 1000 * 60 * 4 }; // played 4 hrs ago
+      const pastGame3 = { gameDate: Date.now() - 60 * 1000 * 60 * 9 }; // played 9 hrs ago
       expect(sortSplitSessionDhGames(pastGame2, pastGame3)).toStrictEqual([
         pastGame3,
         pastGame2,
       ]);
+    });
+  });
+
+  describe('sortGamesChronologically', () => {
+    it('should sort by gameDate', () => {
+      const game1 = {
+        gamePk: '1',
+        gameDate: Date.now() - 60 * 1000 * 60 * 2,
+      };
+      const game2 = {
+        gamePk: '2',
+        gameDate: Date.now() - 60 * 1000 * 60 * 1,
+      };
+      const game3 = { gamePk: '3', gameDate: Date.now() };
+      const game4 = {
+        gamePk: '4',
+        gameDate: Date.now() + 60 * 1000 * 60 * 1,
+      };
+
+      const expectedChronologicallySorted = [game1, game2, game3, game4];
+
+      expect(
+        sortGamesChronologically([game2, game1, game4, game3]),
+      ).toStrictEqual(expectedChronologicallySorted);
+
+      expect(
+        sortGamesChronologically([game3, game2, game4, game1]),
+      ).toStrictEqual(expectedChronologicallySorted);
+
+      expect(
+        sortGamesChronologically(expectedChronologicallySorted.reverse()),
+      ).toStrictEqual(expectedChronologicallySorted);
     });
   });
 });

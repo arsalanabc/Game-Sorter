@@ -36,3 +36,9 @@ export function sortSplitSessionDhGames(gameA: any, gameB: any) {
 
   return sortByLiveGame(firstGame, secondGame);
 }
+
+export function sortGamesChronologically(games: any[]) {
+  return games.sort((gameA: any, gameB: any) => {
+    return gameA.gameDate > gameB.gameDate ? 1 : -1;
+  });
+}
