@@ -22,3 +22,10 @@ export function isLive(game: any) {
 export function sortByLiveGame(gameA: any, gameB: any) {
   return isLive(gameB) ? [gameB, gameA] : [gameA, gameB];
 }
+
+export function sortSingleSessionDhGames(gameA: any, gameB: any) {
+  const [firstGame, secondGame] =
+    gameA.status.startTimeTBD == true ? [gameB, gameA] : [gameA, gameB];
+
+  return sortByLiveGame(firstGame, secondGame);
+}

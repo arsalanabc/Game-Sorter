@@ -3,6 +3,7 @@ import {
   gamesFilterOutByTeamId,
   isLive,
   sortByLiveGame,
+  sortSingleSessionDhGames,
 } from '../src/GamesSorter';
 
 describe('Games Sorter', () => {
@@ -143,6 +144,66 @@ describe('Games Sorter', () => {
         liveGame,
         futureGame,
       ]);
+    });
+  });
+
+  describe('sortSingleSessionDhGames', () => {
+    it('should sort first game by first if live', () => {
+      const firstGame = { status: { startTimeTBD: false }, ...liveGame };
+      const secondGame = { status: { startTimeTBD: true }, ...futureGame };
+
+      expect(sortSingleSessionDhGames(secondGame, firstGame)).toStrictEqual([
+        firstGame,
+        secondGame,
+      ]);
+      expect(sortSingleSessionDhGames(firstGame, secondGame)).toStrictEqual([
+        firstGame,
+        secondGame,
+      ]);
+    });
+
+    it('should sort second game by first if live', () => {
+      const firstGame = { status: { startTimeTBD: false }, ...pastGame };
+      const secondGame = { status: { startTimeTBD: true }, ...liveGame };
+
+      expect(sortSingleSessionDhGames(secondGame, firstGame)).toStrictEqual([
+        secondGame,
+        firstGame,
+      ]);
+      expect(sortSingleSessionDhGames(firstGame, secondGame)).toStrictEqual([
+        secondGame,
+        firstGame,
+      ]);
+    });
+
+    it('should sort by startTimeTBD for past games', () => {
+      const firstGameInPast = { status: { startTimeTBD: false }, ...pastGame };
+      const secondGameInPast = { status: { startTimeTBD: true }, ...pastGame };
+
+      expect(
+        sortSingleSessionDhGames(secondGameInPast, firstGameInPast),
+      ).toStrictEqual([firstGameInPast, secondGameInPast]);
+      expect(
+        sortSingleSessionDhGames(firstGameInPast, secondGameInPast),
+      ).toStrictEqual([firstGameInPast, secondGameInPast]);
+    });
+
+    it('should sort by startTimeTBD for future games', () => {
+      const firstGameInFuture = {
+        status: { startTimeTBD: false },
+        ...futureGame,
+      };
+      const secondGameInFuture = {
+        status: { startTimeTBD: true },
+        ...futureGame,
+      };
+
+      expect(
+        sortSingleSessionDhGames(secondGameInFuture, firstGameInFuture),
+      ).toStrictEqual([firstGameInFuture, secondGameInFuture]);
+      expect(
+        sortSingleSessionDhGames(firstGameInFuture, secondGameInFuture),
+      ).toStrictEqual([firstGameInFuture, secondGameInFuture]);
     });
   });
 });
