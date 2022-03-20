@@ -5,6 +5,7 @@ import {
   sortByLiveGame,
   sortDoubleHeaderGames,
   sortGamesChronologically,
+  sortNonDoubleHeaderGames,
   sortSingleSessionDhGames,
   sortSplitSessionDhGames,
 } from '../src/GamesSorter';
@@ -270,6 +271,41 @@ describe('Games Sorter', () => {
       expect(
         sortGamesChronologically(expectedChronologicallySorted.reverse()),
       ).toStrictEqual(expectedChronologicallySorted);
+    });
+  });
+
+  describe('sortNonDoubleHeaderGames', () => {
+    it('should sort by gameDate', () => {
+      const game1 = {
+        gamePk: '1',
+        doubleHeader: 'N',
+        gameDate: Date.now() - 60 * 1000 * 60 * 2,
+      };
+      const game2 = {
+        gamePk: '2',
+        doubleHeader: 'N',
+        gameDate: Date.now() - 60 * 1000 * 60 * 1,
+      };
+      const game3 = { gamePk: '3', gameDate: Date.now(), doubleHeader: 'N' };
+      const game4 = {
+        gamePk: '4',
+        doubleHeader: 'N',
+        gameDate: Date.now() + 60 * 1000 * 60 * 1,
+      };
+
+      const expected = [game1, game2, game3, game4];
+
+      expect(
+        sortNonDoubleHeaderGames([game2, game1, game4, game3]),
+      ).toStrictEqual(expected);
+
+      expect(
+        sortNonDoubleHeaderGames([game3, game2, game4, game1]),
+      ).toStrictEqual(expected);
+
+      expect(
+        sortNonDoubleHeaderGames([game4, game3, game2, game1]),
+      ).toStrictEqual(expected);
     });
   });
 

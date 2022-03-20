@@ -68,3 +68,11 @@ export function sortDoubleHeaderGames(games: any) {
 
   return [];
 }
+
+export function sortNonDoubleHeaderGames(games: any) {
+  const nonDoubleHeaderGames = games.filter((g: any) => {
+    return g.doubleHeader == 'N';
+  });
+
+  return sortGamesChronologically(nonDoubleHeaderGames);
+}
