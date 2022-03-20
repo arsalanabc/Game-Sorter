@@ -275,25 +275,39 @@ describe('Games Sorter', () => {
   });
 
   describe('sortNonDoubleHeaderGames', () => {
-    it('should sort by gameDate', () => {
-      const game1 = {
-        gamePk: '1',
-        doubleHeader: 'N',
-        gameDate: Date.now() - 60 * 1000 * 60 * 2,
-      };
-      const game2 = {
-        gamePk: '2',
-        doubleHeader: 'N',
-        gameDate: Date.now() - 60 * 1000 * 60 * 1,
-      };
-      const game3 = { gamePk: '3', gameDate: Date.now(), doubleHeader: 'N' };
-      const game4 = {
-        gamePk: '4',
-        doubleHeader: 'N',
-        gameDate: Date.now() + 60 * 1000 * 60 * 1,
-      };
+    const game1 = {
+      gamePk: '1',
+      doubleHeader: 'N',
+      gameDate: Date.now() - 60 * 1000 * 60 * 5,
+    };
+    const game2 = {
+      gamePk: '2',
+      doubleHeader: 'N',
+      gameDate: Date.now() - 60 * 1000 * 60 * 4,
+    };
+    const game3 = { gamePk: '3', gameDate: Date.now(), doubleHeader: 'N' };
+    const game4 = {
+      gamePk: '4',
+      doubleHeader: 'N',
+      gameDate: Date.now() + 60 * 1000 * 60 * 1,
+    };
 
-      const expected = [game1, game2, game3, game4];
+    it('should put live game first', () => {
+      expect(
+        sortNonDoubleHeaderGames([game2, game1, game4, game3])[0],
+      ).toStrictEqual(game3);
+
+      expect(
+        sortNonDoubleHeaderGames([game3, game2, game4, game1])[0],
+      ).toStrictEqual(game3);
+
+      expect(
+        sortNonDoubleHeaderGames([game4, game3, game2, game1])[0],
+      ).toStrictEqual(game3);
+    });
+
+    it('should sort by gameDate', () => {
+      const expected = [game3, game1, game2, game4];
 
       expect(
         sortNonDoubleHeaderGames([game2, game1, game4, game3]),

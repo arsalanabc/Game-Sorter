@@ -74,5 +74,8 @@ export function sortNonDoubleHeaderGames(games: any) {
     return g.doubleHeader == 'N';
   });
 
-  return sortGamesChronologically(nonDoubleHeaderGames);
+  const liveGame = nonDoubleHeaderGames.filter(isLive);
+  const nonLiveGame = nonDoubleHeaderGames.filter((g) => !isLive(g));
+
+  return [...liveGame, ...sortGamesChronologically(nonLiveGame)];
 }
