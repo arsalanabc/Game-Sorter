@@ -1,5 +1,11 @@
 import * as request from 'supertest';
 import { app } from '../server';
+import sampleOutput_1 from './../sortedSamples/2021-04-01';
+import sampleOutput_2 from './../sortedSamples/2021-07-13';
+import sampleOutput_3 from './../sortedSamples/2021-09-11';
+import sampleOutput_4 from './../sortedSamples/2021-11-02';
+import sampleOutput_5 from './../sortedSamples/2022-03-31';
+import sampleOutput_6 from './../sortedSamples/2022-07-21';
 
 describe('Api Smoke Test', () => {
   it('should return error message for missing input', async () => {
@@ -121,6 +127,42 @@ describe('Api Smoke Test', () => {
         expect(games[0]).toHaveProperty('ifNecessary');
         expect(games[0]).toHaveProperty('ifNecessaryDescription');
       }
+    }
+  });
+
+  describe('check key dates', () => {
+    const dates = [
+      '04/01/2021',
+      '07/13/2021',
+      '09/11/2021',
+      '11/02/2021',
+      '03/31/2022',
+      '07/21/2022',
+    ];
+    const formatedDates = dates.map((d) => {
+      return new Date(d).toISOString().slice(0, 10);
+    });
+
+    const keyTeamsForKeyDates = [114, 160, 141, 117, 136, 147];
+    const expectedOutput = [
+      sampleOutput_1,
+      sampleOutput_2,
+      sampleOutput_3,
+      sampleOutput_4,
+      sampleOutput_5,
+      sampleOutput_6,
+    ];
+
+    for (let i = 0; i < keyTeamsForKeyDates.length; i++) {
+      it(`key date of ${formatedDates[i]} for team ${keyTeamsForKeyDates[i]}`, async () => {
+        let response = await request(app).get(
+          `/sort-games?teamId=${keyTeamsForKeyDates[i]}&date=${formatedDates[i]}`,
+        );
+
+        expect(response.headers['content-type']).toMatch('application/json');
+        expect(response.status).toEqual(200);
+        expect(response.body).toStrictEqual(expectedOutput[i]);
+      });
     }
   });
 });
