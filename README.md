@@ -2,6 +2,12 @@
 
 #### A simple app sort games by favourite team on a given date.
 
+### Required Denpendencies
+
+- [NPM 8 or above](https://www.npmjs.com/package/npm)
+- [Node 14 or above](https://nodejs.org/en/download/)
+- [Docker](https://docs.docker.com/get-docker/)
+
 ### Before starting
 
 - Node 14 or higher is required
