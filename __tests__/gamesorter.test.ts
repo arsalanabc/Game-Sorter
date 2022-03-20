@@ -4,6 +4,7 @@ import {
   isLive,
   sortByLiveGame,
   sortSingleSessionDhGames,
+  sortSplitSessionDhGames,
 } from '../src/GamesSorter';
 
 describe('Games Sorter', () => {
@@ -204,6 +205,38 @@ describe('Games Sorter', () => {
       expect(
         sortSingleSessionDhGames(firstGameInFuture, secondGameInFuture),
       ).toStrictEqual([firstGameInFuture, secondGameInFuture]);
+    });
+  });
+
+  describe('sortSplitSessionDhGames', () => {
+    it('should sort by live games', () => {
+      expect(sortSplitSessionDhGames(liveGame, pastGame)).toStrictEqual([
+        liveGame,
+        pastGame,
+      ]);
+      expect(sortSplitSessionDhGames(pastGame, liveGame)).toStrictEqual([
+        liveGame,
+        pastGame,
+      ]);
+      expect(sortSplitSessionDhGames(futureGame, liveGame)).toStrictEqual([
+        liveGame,
+        futureGame,
+      ]);
+    });
+
+    it('should sort by gameDate if not live', () => {
+      const pastGame2 = { gameDate: Date.now() - 60 * 1000 * 60 * 4 };
+      const pastGame3 = { gameDate: Date.now() - 60 * 1000 * 60 * 9 };
+
+      expect(sortSplitSessionDhGames(futureGame, pastGame)).toStrictEqual([
+        pastGame,
+        futureGame,
+      ]);
+
+      expect(sortSplitSessionDhGames(pastGame2, pastGame3)).toStrictEqual([
+        pastGame3,
+        pastGame2,
+      ]);
     });
   });
 });

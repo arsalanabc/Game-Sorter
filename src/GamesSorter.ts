@@ -29,3 +29,10 @@ export function sortSingleSessionDhGames(gameA: any, gameB: any) {
 
   return sortByLiveGame(firstGame, secondGame);
 }
+
+export function sortSplitSessionDhGames(gameA: any, gameB: any) {
+  const [firstGame, secondGame] =
+    gameA.gameDate > gameB.gameDate ? [gameB, gameA] : [gameA, gameB];
+
+  return sortByLiveGame(firstGame, secondGame);
+}
